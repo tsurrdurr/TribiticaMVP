@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TribiticaMVP.Models;
 
 namespace TribiticaMVP
 {
@@ -17,6 +19,7 @@ namespace TribiticaMVP
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            EnsureDbCreated();
         }
 
         public IConfiguration Configuration { get; }
@@ -59,6 +62,14 @@ namespace TribiticaMVP
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static void EnsureDbCreated()
+        {
+            using (var client = new TribiticaDbContext())
+            {
+                client.Database.EnsureCreated();
+            }
         }
     }
 }
