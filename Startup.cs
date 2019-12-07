@@ -52,6 +52,8 @@ namespace TribiticaMVP
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

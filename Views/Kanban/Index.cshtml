@@ -1,8 +1,18 @@
-﻿
+﻿@model TribiticaMVP.Models.KanbanModel
+
 @{
     ViewData["Title"] = "Kanban";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="~/css/site.css" />
 
 <h1>Kanban</h1>
-
+<div class="row">
+    <div class="column">gfh</div>
+    <div class="column">gfhfgh</div>
+    <div class="column">
+        @Html.LabelFor(m => m.Text)
+        @Html.EditorFor(m => m.Text)
+        @Html.ValidationMessageFor(m => m.Text)
+    </div>
+</div> 
