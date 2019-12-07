@@ -11,8 +11,14 @@
     <div class="column">gfh</div>
     <div class="column">gfhfgh</div>
     <div class="column">
-        @Html.LabelFor(m => m.Text)
-        @Html.EditorFor(m => m.Text)
-        @Html.ValidationMessageFor(m => m.Text)
+        <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
+            <input type="text" id="add-name" placeholder="New to-do">
+            <input type="submit" value="Add">
+        </form>
     </div>
-</div> 
+</div>
+
+<script src="js/site.js" asp-append-version="true"></script>
+<script type="text/javascript">
+    getItems();
+</script>
