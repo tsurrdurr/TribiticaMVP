@@ -14,11 +14,12 @@ function getItems() {
 }
 
 function addItem() {
-    const addNameTextbox = document.getElementById('add-name');
+    const ownerId = document.getElementById('user-id');
+    const name = document.getElementById('add-yearly-name');
 
     const item = {
-        isComplete: false,
-        name: addNameTextbox.value.trim()
+        OwnerId: ownerId.value.trim(),
+        Header: "name"
     };
 
     fetch(uri, {
@@ -32,7 +33,6 @@ function addItem() {
         .then(response => response.json())
         .then(() => {
             getItems();
-            addNameTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -89,18 +89,21 @@ function _displayCount(itemCount) {
 }
 
 function _displayItems(data) {
-    const tBody = document.getElementById('todos');
+    const addArea = document.getElementById('create-year-form');
+    let cloneArea = addArea.cloneNode(true);
+
+    const tBody = document.getElementById('year');
     tBody.innerHTML = '';
 
-    _displayCount(data.length);
-
     const button = document.createElement('button');
+    tBody.appendChild(cloneArea);
 
     data.forEach(item => {
-        let isCompleteCheckbox = document.createElement('input');
-        isCompleteCheckbox.type = 'checkbox';
-        isCompleteCheckbox.disabled = true;
-        isCompleteCheckbox.checked = item.isComplete;
+        let headerLabel = document.createElement('label');
+        //headerLabel.type = 'checkbox';
+        //headerLabel.disabled = true;
+        //headerLabel.checked = item.isComplete;
+        headerLabel.textContent = item.header;
 
         let editButton = button.cloneNode(false);
         editButton.innerText = 'Edit';
@@ -110,20 +113,19 @@ function _displayItems(data) {
         deleteButton.innerText = 'Delete';
         deleteButton.setAttribute('onclick', `deleteItem(${item.id})`);
 
-        let tr = tBody.insertRow();
+        let itemDiv = document.createElement('div');
+        //let tr = tBody.insertRow();
 
-        let td1 = tr.insertCell(0);
-        td1.appendChild(isCompleteCheckbox);
+        //let td1 = tr.insertCell(0);
+        itemDiv.appendChild(headerLabel);
 
-        let td2 = tr.insertCell(1);
-        let textNode = document.createTextNode(item.name);
-        td2.appendChild(textNode);
+        //let td3 = tr.insertCell(2);
+        itemDiv.appendChild(editButton);
 
-        let td3 = tr.insertCell(2);
-        td3.appendChild(editButton);
+        //let td4 = tr.insertCell(3);
+        itemDiv.appendChild(deleteButton);
 
-        let td4 = tr.insertCell(3);
-        td4.appendChild(deleteButton);
+        tBody.appendChild(itemDiv);
     });
 
     todos = data;

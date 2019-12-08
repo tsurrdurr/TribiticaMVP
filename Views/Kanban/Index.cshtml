@@ -6,14 +6,22 @@
 }
 <link rel="stylesheet" href="~/css/site.css" />
 
+@if (ViewContext.HttpContext.Session.TryGetValue("UserID", out var userGuidBytes))
+{
+    var userGuid = new Guid(userGuidBytes);
+    <input id="user-id" value="@userGuid" hidden="hidden" />
+}
+
 <h1>Kanban</h1>
 <div class="row">
-    <div class="column">gfh</div>
-    <div class="column">gfhfgh</div>
-    <div class="column">
-        <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-            <input type="text" id="add-name" placeholder="New to-do">
-            <input type="submit" value="Add">
+    <div class="column" id="day"></div>
+    <div class="column" id="week"></div>
+    <div class="column" id="year">
+        <form action="javascript:void(0);" method="POST" onsubmit="addItem()" id="create-year-form">
+            <span>
+                <input type="text" id="add-yearly-name" placeholder="New yearly">
+                <input type="submit" value="Add">
+            </span>
         </form>
     </div>
 </div>

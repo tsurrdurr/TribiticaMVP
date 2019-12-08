@@ -14,7 +14,7 @@ namespace TribiticaMVP.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View(new KanbanModel { Text = "213" });
+            return View();
         }
 
         // GET: Kanban/Details/5

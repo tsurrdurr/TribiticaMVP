@@ -178,7 +178,7 @@ namespace TribiticaMVP.Controllers
 
                     if (user != null)
                     {
-                        HttpContext.Session.SetString("UserID", user.ID.ToString());
+                        HttpContext.Session.Set("UserID", user.ID.ToByteArray());
                         HttpContext.Session.SetString("UserName", user.Name);
                     }
                 }
