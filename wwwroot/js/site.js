@@ -4,7 +4,19 @@
 // Write your JavaScript code.
 
 const uri = 'api/Goals';
+const default_id = '00000000-0000-0000-0000-000000000000';
 let todos = [];
+var Goal = function (id) {
+    this.id = id;
+    this.ownerId = document.getElementById('user-id').value.trim(),
+    this.header = '';
+    this.description = '';
+};
+
+window.onload = function () {
+    hideUpdateInput();
+
+}
 
 function getItems() {
     fetch(uri)
@@ -14,13 +26,10 @@ function getItems() {
 }
 
 function addItem() {
-    const ownerId = document.getElementById('user-id');
-    const name = document.getElementById('add-yearly-name');
+    const headerYearly = document.getElementById('add-yearly-name');
 
-    const item = {
-        OwnerId: ownerId.value.trim(),
-        Header: "name"
-    };
+    const item = new Goal(default_id);
+    item.header = headerYearly.value.trim();
 
     fetch(uri, {
         method: 'POST',
@@ -33,6 +42,7 @@ function addItem() {
         .then(response => response.json())
         .then(() => {
             getItems();
+            headerYearly.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -47,19 +57,16 @@ function deleteItem(id) {
 
 function displayEditForm(id) {
     const item = todos.find(item => item.id === id);
-
-    document.getElementById('edit-name').value = item.name;
-    document.getElementById('edit-id').value = item.id;
-    document.getElementById('edit-isComplete').checked = item.isComplete;
+    setUpdateDialogFields(item);
     document.getElementById('editForm').style.display = 'block';
 }
 
 function updateItem() {
     const itemId = document.getElementById('edit-id').value;
     const item = {
-        id: parseInt(itemId, 10),
-        isComplete: document.getElementById('edit-isComplete').checked,
-        name: document.getElementById('edit-name').value.trim()
+        id: itemId,
+        header: document.getElementById('edit-header').value.trim(),
+        description: document.getElementById('edit-description').value.trim()
     };
 
     fetch(`${uri}/${itemId}`, {
@@ -73,13 +80,14 @@ function updateItem() {
         .then(() => getItems())
         .catch(error => console.error('Unable to update item.', error));
 
-    closeInput();
+    hideUpdateInput();
 
     return false;
 }
 
-function closeInput() {
+function hideUpdateInput() {
     document.getElementById('editForm').style.display = 'none';
+    setUpdateDialogFields(new Goal(default_id));
 }
 
 function _displayCount(itemCount) {
@@ -100,18 +108,15 @@ function _displayItems(data) {
 
     data.forEach(item => {
         let headerLabel = document.createElement('label');
-        //headerLabel.type = 'checkbox';
-        //headerLabel.disabled = true;
-        //headerLabel.checked = item.isComplete;
         headerLabel.textContent = item.header;
 
         let editButton = button.cloneNode(false);
         editButton.innerText = 'Edit';
-        editButton.setAttribute('onclick', `displayEditForm(${item.id})`);
+        editButton.setAttribute('onclick', `displayEditForm('${item.id}')`);
 
         let deleteButton = button.cloneNode(false);
         deleteButton.innerText = 'Delete';
-        deleteButton.setAttribute('onclick', `deleteItem(${item.id})`);
+        deleteButton.setAttribute('onclick', `deleteItem('${item.id}')`);
 
         let itemDiv = document.createElement('div');
         //let tr = tBody.insertRow();
@@ -129,4 +134,10 @@ function _displayItems(data) {
     });
 
     todos = data;
+}
+
+function setUpdateDialogFields(goal) {
+    document.getElementById('edit-id').value = goal.id;
+    document.getElementById('edit-header').value = goal.header;
+    document.getElementById('edit-description').value = goal.description;
 }

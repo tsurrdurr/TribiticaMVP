@@ -50,7 +50,9 @@ namespace TribiticaMVP.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(goalYear).State = EntityState.Modified;
+            var goalYearPrevious = _context.GoalsYear.Find(id);
+            ProjectNonNullGoalProperties(goalYear, goalYearPrevious);
+            _context.GoalsYear.Update(goalYearPrevious);
 
             try
             {
@@ -101,5 +103,12 @@ namespace TribiticaMVP.Controllers
         {
             return _context.GoalsYear.Any(e => e.Id == id);
         }
+
+        private static void ProjectNonNullGoalProperties(IGoal newGoal, IGoal previousGoal)
+        {
+            previousGoal.Header = newGoal.Header ?? previousGoal.Header;
+            previousGoal.Description = newGoal.Description ?? previousGoal.Description;
+        }
+
     }
 }
