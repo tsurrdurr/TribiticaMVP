@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-const uri = 'api/Goals';
+const uri = 'api/v1/goals/year';
 const default_id = '00000000-0000-0000-0000-000000000000';
 let todos = [];
 var Goal = function (id) {

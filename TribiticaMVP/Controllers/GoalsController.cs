@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TribiticaMVP.Contracts;
 using TribiticaMVP.Models;
 
 namespace TribiticaMVP.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class GoalsController : ControllerBase
     {
         private readonly TribiticaDbContext _context;
@@ -20,16 +19,14 @@ namespace TribiticaMVP.Controllers
             _context = new TribiticaDbContext();
         }
 
-        // GET: api/Goals
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<GoalYear>>> GetGoalsYear()
+        [HttpGet(APIRoutes.Goals.Year.GetAll)]
+        public async Task<ActionResult<IEnumerable<GoalYear>>> GetAllYear()
         {
             return await _context.GoalsYear.ToListAsync();
         }
 
-        // GET: api/Goals/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GoalYear>> GetGoalYear(Guid id)
+        [HttpGet(APIRoutes.Goals.Year.GetById)]
+        public async Task<ActionResult<GoalYear>> GetByIdYear(Guid id)
         {
             var goalYear = await _context.GoalsYear.FindAsync(id);
 
@@ -42,8 +39,8 @@ namespace TribiticaMVP.Controllers
         }
 
         // PUT: api/Goals/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGoalYear(Guid id, GoalYear goalYear)
+        [HttpPut(APIRoutes.Goals.Year.Put)]
+        public async Task<IActionResult> PutYear(Guid id, GoalYear goalYear)
         {
             if (id != goalYear.Id)
             {
@@ -73,9 +70,8 @@ namespace TribiticaMVP.Controllers
             return NoContent();
         }
 
-        // POST: api/Goals
-        [HttpPost]
-        public async Task<ActionResult<GoalYear>> PostGoalYear(GoalYear goalYear)
+        [HttpPost(APIRoutes.Goals.Year.Post)]
+        public async Task<ActionResult<GoalYear>> PostYear(GoalYear goalYear)
         {
             _context.GoalsYear.Add(goalYear);
             await _context.SaveChangesAsync();
@@ -83,9 +79,8 @@ namespace TribiticaMVP.Controllers
             return CreatedAtAction("GetGoalYear", new { id = goalYear.Id }, goalYear);
         }
 
-        // DELETE: api/Goals/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<GoalYear>> DeleteGoalYear(Guid id)
+        [HttpDelete(APIRoutes.Goals.Year.Delete)]
+        public async Task<ActionResult<GoalYear>> DeleteYear(Guid id)
         {
             var goalYear = await _context.GoalsYear.FindAsync(id);
             if (goalYear == null)

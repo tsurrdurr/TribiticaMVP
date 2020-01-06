@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using TribiticaMVP.Contracts;
 
 namespace TribiticaTests
 {

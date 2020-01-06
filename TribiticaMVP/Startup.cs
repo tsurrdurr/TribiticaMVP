@@ -34,6 +34,11 @@ namespace TribiticaMVP
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddSessionStateTempDataProvider();
 
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Tribitica", Version = "v1" });
+            });
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -58,6 +63,18 @@ namespace TribiticaMVP
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var swaggerOptions = new Options.SwaggerOptions();
+            Configuration.GetSection(nameof(Options.SwaggerOptions)).Bind(swaggerOptions);
+
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = swaggerOptions.JsonRoute;
+            });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.UIEndpoint);
+            });
 
             app.UseDefaultFiles();
             app.UseSession();
