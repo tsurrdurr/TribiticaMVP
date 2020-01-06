@@ -183,7 +183,7 @@ namespace TribiticaMVP.Controllers
                     }
                 }
             }
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -191,7 +191,7 @@ namespace TribiticaMVP.Controllers
         {
             HttpContext.Session.Remove("UserID");
             HttpContext.Session.Remove("UserName");
-            return View();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
