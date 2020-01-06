@@ -8,6 +8,8 @@ namespace TribiticaMVP.Models
 {
     public class TribiticaDbContext : DbContext
     {
+        public static string DbFileName = "TribiticaDefault.db";
+
         public DbSet<TribiticaAccount> Accounts { get; set; }
 
         public DbSet<GoalYear> GoalsYear { get; set; }
@@ -16,7 +18,7 @@ namespace TribiticaMVP.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite(@"Filename=TribiticaTest.db");
+                optionsBuilder.UseSqlite($"Filename={DbFileName}");
             }
         }
 

@@ -19,7 +19,7 @@ namespace TribiticaMVP
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            EnsureDbCreated();
+            PrepareDb();
         }
 
         public IConfiguration Configuration { get; }
@@ -81,8 +81,14 @@ namespace TribiticaMVP
             });
         }
 
-        private static void EnsureDbCreated()
+        private void PrepareDb()
         {
+            var dbSettings = Configuration.GetSection("Database")?.GetChildren();
+            if (dbSettings != null && dbSettings.Any(x => x.Key == "DbName"))
+            {
+                TribiticaDbContext.DbFileName = dbSettings.First(x => x.Key == "DbName").Value;
+            }
+
             using (var client = new TribiticaDbContext())
             {
                 client.Database.EnsureCreated();
