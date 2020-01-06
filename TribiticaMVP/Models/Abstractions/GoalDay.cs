@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using TribiticaMVP.Models.ViewModels;
 
 namespace TribiticaMVP.Models.Abstractions
 {
-    public class GoalYear : IGoal
+    public class GoalDay : IGoal
     {
         public Guid Id { get; set; }
 

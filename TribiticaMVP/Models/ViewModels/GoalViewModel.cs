@@ -1,21 +1,15 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using TribiticaMVP.Models.ViewModels;
 
-namespace TribiticaMVP.Models.Abstractions
+namespace TribiticaMVP.Models.ViewModels
 {
-    public class GoalYear : IGoal
+    public class GoalViewModel : IGoal
     {
         public Guid Id { get; set; }
 
         public Guid OwnerId { get; set; }
-
-        [NotMapped]
-        public TribiticaAccount Owner { get; set; }
 
         public string Header { get; set; }
 

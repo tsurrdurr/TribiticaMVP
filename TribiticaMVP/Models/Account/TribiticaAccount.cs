@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using TribiticaMVP.Models.Abstractions;
 
 namespace TribiticaMVP.Models
 {
@@ -31,5 +32,11 @@ namespace TribiticaMVP.Models
 
         [NotMapped]
         public ICollection<GoalYear> GoalsYear { get; set; }
+
+        [NotMapped]
+        public ICollection<GoalWeek> GoalsWeek { get; set; }
+
+        [NotMapped]
+        public ICollection<GoalDay> GoalsDay { get; set; }
     }
 }
