@@ -14,6 +14,9 @@ namespace TribiticaMVP.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+            HttpContext.Session.TryGetValue("UserID", out var userGuidBytes);
+            if (userGuidBytes == null)
+                return RedirectToAction("Login", "Account");
             return View();
         }
 
