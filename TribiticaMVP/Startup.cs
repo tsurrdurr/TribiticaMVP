@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TribiticaMVP.Models;
+using TribiticaMVP.Models.Abstractions;
+using TribiticaMVP.Services;
 
 namespace TribiticaMVP
 {
@@ -39,6 +41,13 @@ namespace TribiticaMVP
                 x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Tribitica", Version = "v1" });
             });
 
+            services.AddDbContext<TribiticaDbContext>(options =>
+            {
+                options.UseSqlite($"Filename={GetDbFileNameFromSettings()}");
+            });
+            ////services.AddDefaultIdentity<TribiticaAccount>()
+            ////    .AddEntityFrameworkStores<TribiticaDbContext>();
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -48,6 +57,7 @@ namespace TribiticaMVP
                 options.Cookie.IsEssential = true;
             });
 
+            services.AddTransient(typeof(IGoalService<>), typeof(GoalService<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,16 +103,22 @@ namespace TribiticaMVP
 
         private void PrepareDb()
         {
-            var dbSettings = Configuration.GetSection("Database")?.GetChildren();
-            if (dbSettings != null && dbSettings.Any(x => x.Key == "DbName"))
-            {
-                TribiticaDbContext.DbFileName = dbSettings.First(x => x.Key == "DbName").Value;
-            }
+            TribiticaDbContext.DbFileName = GetDbFileNameFromSettings();
 
-            using (var client = new TribiticaDbContext())
+            using (var client = new TribiticaDbContext(new DbContextOptionsBuilder<TribiticaDbContext>().UseSqlite("Filename=" + GetDbFileNameFromSettings()).Options))
             {
                 client.Database.EnsureCreated();
             }
+        }
+
+        private string GetDbFileNameFromSettings()
+        {
+            var dbSettings = Configuration.GetSection("Database")?.GetChildren();
+            if (dbSettings != null && dbSettings.Any(x => x.Key == "DbName"))
+            {
+                return dbSettings.First(x => x.Key == "DbName").Value;
+            }
+            return null;
         }
     }
 }

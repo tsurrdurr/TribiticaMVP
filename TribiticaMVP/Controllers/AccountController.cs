@@ -13,35 +13,39 @@ namespace TribiticaMVP.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly TribiticaDbContext _context;
+        private readonly DbContextOptions<TribiticaDbContext> _options;
 
-        public AccountController()
+        public AccountController(DbContextOptions<TribiticaDbContext> options)
         {
-            _context = new TribiticaDbContext();
+            _options = options;
         }
 
         // GET: Account
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Accounts.ToListAsync());
+            using (var dbContext = new TribiticaDbContext(_options))
+            return View(await dbContext.Accounts.ToListAsync());
         }
 
         // GET: Account/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
+            using (var dbContext = new TribiticaDbContext(_options))
             {
-                return NotFound();
-            }
+                if (id == null)
+                    {
+                    return NotFound();
+                }
 
-            var tribiticaAccount = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (tribiticaAccount == null)
-            {
-                return NotFound();
-            }
+                var tribiticaAccount = await dbContext.Accounts
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                if (tribiticaAccount == null)
+                {
+                    return NotFound();
+                }
 
-            return View(tribiticaAccount);
+                return View(tribiticaAccount);
+            }
         }
 
         // GET: Account/Create
@@ -59,10 +63,13 @@ namespace TribiticaMVP.Controllers
         {
             if (ModelState.IsValid)
             {
-                tribiticaAccount.ID = Guid.NewGuid();
-                _context.Add(tribiticaAccount);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                using (var dbContext = new TribiticaDbContext(_options))
+                {
+                    tribiticaAccount.ID = Guid.NewGuid();
+                    dbContext.Add(tribiticaAccount);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(tribiticaAccount);
         }
@@ -74,13 +81,15 @@ namespace TribiticaMVP.Controllers
             {
                 return NotFound();
             }
-
-            var tribiticaAccount = await _context.Accounts.FindAsync(id);
-            if (tribiticaAccount == null)
+            using (var dbContext = new TribiticaDbContext(_options))
             {
-                return NotFound();
+                var tribiticaAccount = await dbContext.Accounts.FindAsync(id);
+                if (tribiticaAccount == null)
+                {
+                    return NotFound();
+                }
+                return View(tribiticaAccount);
             }
-            return View(tribiticaAccount);
         }
 
         // POST: Account/Edit/5
@@ -99,8 +108,11 @@ namespace TribiticaMVP.Controllers
             {
                 try
                 {
-                    _context.Update(tribiticaAccount);
-                    await _context.SaveChangesAsync();
+                    using (var dbContext = new TribiticaDbContext(_options))
+                    {
+                        dbContext.Update(tribiticaAccount);
+                        await dbContext.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,15 +137,17 @@ namespace TribiticaMVP.Controllers
             {
                 return NotFound();
             }
-
-            var tribiticaAccount = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (tribiticaAccount == null)
+            using (var dbContext = new TribiticaDbContext(_options))
             {
-                return NotFound();
-            }
+                var tribiticaAccount = await dbContext.Accounts
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                if (tribiticaAccount == null)
+                {
+                    return NotFound();
+                }
 
-            return View(tribiticaAccount);
+                return View(tribiticaAccount);
+            }
         }
 
         // POST: Account/Delete/5
@@ -141,15 +155,19 @@ namespace TribiticaMVP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var tribiticaAccount = await _context.Accounts.FindAsync(id);
-            _context.Accounts.Remove(tribiticaAccount);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            using (var dbContext = new TribiticaDbContext(_options))
+            {
+                var tribiticaAccount = await dbContext.Accounts.FindAsync(id);
+                dbContext.Accounts.Remove(tribiticaAccount);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool TribiticaAccountExists(Guid id)
         {
-            return _context.Accounts.Any(e => e.ID == id);
+            using (var dbContext = new TribiticaDbContext(_options))
+                return dbContext.Accounts.Any(e => e.ID == id);
         }
 
         public ActionResult Login()
@@ -163,7 +181,7 @@ namespace TribiticaMVP.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var dbContext = new TribiticaDbContext())
+                using (var dbContext = new TribiticaDbContext(_options))
                 {
                     var user = dbContext
                         .Accounts

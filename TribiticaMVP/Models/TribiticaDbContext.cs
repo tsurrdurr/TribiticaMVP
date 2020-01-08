@@ -17,8 +17,10 @@ namespace TribiticaMVP.Models
 
         public DbSet<GoalWeek> GoalsWeek { get; set; }
 
-        public DbSet<GoalWeek> GoalsDay { get; set; }
+        public DbSet<GoalDay> GoalsDay { get; set; }
 
+
+        public TribiticaDbContext(DbContextOptions<TribiticaDbContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
