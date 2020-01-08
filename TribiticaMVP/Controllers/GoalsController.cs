@@ -68,38 +68,38 @@ namespace TribiticaMVP.Controllers
 
         // PUT: api/Goals/5
         [HttpPut(APIRoutes.Goals.Year.Put)]
-        public async Task<ActionResult<GoalViewModel>> PutYear(Guid id, GoalViewModel goalYear)
+        public async Task<ActionResult<GoalViewModel>> PutYear(Guid id, [FromBody] GoalViewModel goalViewModel)
         {
-            if (id != goalYear.Id)
+            if (id != goalViewModel.Id)
                 return BadRequest();
 
-            var goalYearPrevious = await _goalYearService.Update(goalYear.ToYearDb());
+            var goalYearPrevious = await _goalYearService.Update(goalViewModel.ToYearDb());
             return goalYearPrevious.ToViewModel();
         }
 
         [HttpPost(APIRoutes.Goals.Year.Post)]
-        public async Task<ActionResult<GoalViewModel>> PostYear(GoalViewModel goalYear)
+        public async Task<ActionResult<GoalViewModel>> PostYear([FromBody] GoalViewModel goalViewModel)
         {
             var userGuid = GetUserId();
             if (!userGuid.HasValue)
                 return Forbid();
 
-            goalYear.OwnerId = userGuid.Value;
+            goalViewModel.OwnerId = userGuid.Value;
 
-            var entry = await _goalYearService.Add(goalYear.ToYearDb());
+            var entry = await _goalYearService.Add(goalViewModel.ToYearDb());
             return CreatedAtAction(nameof(GetByIdYear), new { id = entry.Id }, entry);
         }
 
         [HttpPost(APIRoutes.Goals.Week.Post)]
-        public async Task<ActionResult<GoalViewModel>> PostWeek(GoalViewModel goalWeek)
+        public async Task<ActionResult<GoalViewModel>> PostWeek([FromBody] GoalViewModel goalViewModel)
         {
             var userGuid = GetUserId();
             if (!userGuid.HasValue)
                 return Forbid();
 
-            goalWeek.OwnerId = userGuid.Value;
+            goalViewModel.OwnerId = userGuid.Value;
 
-            var entry = await _goalWeekService.Add(goalWeek.ToWeekDb());
+            var entry = await _goalWeekService.Add(goalViewModel.ToWeekDb());
             return CreatedAtAction(nameof(GetByIdYear), new { id = entry.Id }, entry);
         }
 

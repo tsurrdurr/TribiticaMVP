@@ -8,7 +8,7 @@ const default_id = '00000000-0000-0000-0000-000000000000';
 let todos = [];
 var Goal = function (id) {
     this.id = id;
-    this.ownerId = document.getElementById('user-id').value.trim(),
+    this.ownerId = getOwnerId(),
     this.header = '';
     this.description = '';
 };
@@ -26,10 +26,10 @@ function getItems() {
 }
 
 function addItem() {
-    const headerYearly = document.getElementById('add-yearly-name');
+    const headerYearly = document.getElementById('add-yearly-name').value.trim();
 
     const item = new Goal(default_id);
-    item.header = headerYearly.value.trim();
+    item.header = headerYearly;
 
     fetch(uri, {
         method: 'POST',
@@ -140,4 +140,8 @@ function setUpdateDialogFields(goal) {
     document.getElementById('edit-id').value = goal.id;
     document.getElementById('edit-header').value = goal.header;
     document.getElementById('edit-description').value = goal.description;
+}
+
+function getOwnerId() {
+    return document.getElementById('user-id').value.trim();
 }
