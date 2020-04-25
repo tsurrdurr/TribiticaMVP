@@ -48,6 +48,17 @@ namespace TribiticaMVP.Controllers
             return goals.Select(x => x.ToViewModel()).ToList();
         }
 
+        [HttpGet(APIRoutes.Goals.Day.GetAll)]
+        public async Task<ActionResult<IEnumerable<GoalViewModel>>> GetAllDay()
+        {
+            var userGuid = GetUserId();
+            if (userGuid == null)
+                return Forbid();
+
+            var goals = await _goalDayService.GetAll(userGuid.Value);
+            return goals.Select(x => x.ToViewModel()).ToList();
+        }
+
         [HttpGet(APIRoutes.Goals.Year.GetById)]
         public async Task<ActionResult<GoalViewModel>> GetByIdYear(Guid id)
         {
@@ -66,6 +77,15 @@ namespace TribiticaMVP.Controllers
             return goalWeek.ToViewModel();
         }
 
+        [HttpGet(APIRoutes.Goals.Day.GetById)]
+        public async Task<ActionResult<GoalViewModel>> GetByIdDay(Guid id)
+        {
+            var goalWeek = await _goalDayService.Get(id);
+            if (goalWeek == null)
+                return NotFound();
+            return goalWeek.ToViewModel();
+        }
+
         // PUT: api/Goals/5
         [HttpPut(APIRoutes.Goals.Year.Put)]
         public async Task<ActionResult<GoalViewModel>> PutYear(Guid id, [FromBody] GoalViewModel goalViewModel)
@@ -74,6 +94,26 @@ namespace TribiticaMVP.Controllers
                 return BadRequest();
 
             var goalYearPrevious = await _goalYearService.Update(goalViewModel.ToYearDb());
+            return goalYearPrevious.ToViewModel();
+        }
+
+        [HttpPut(APIRoutes.Goals.Week.Put)]
+        public async Task<ActionResult<GoalViewModel>> PutWeek(Guid id, [FromBody] GoalViewModel goalViewModel)
+        {
+            if (id != goalViewModel.Id)
+                return BadRequest();
+
+            var goalYearPrevious = await _goalWeekService.Update(goalViewModel.ToWeekDb());
+            return goalYearPrevious.ToViewModel();
+        }
+
+        [HttpPut(APIRoutes.Goals.Day.Put)]
+        public async Task<ActionResult<GoalViewModel>> PutDay(Guid id, [FromBody] GoalViewModel goalViewModel)
+        {
+            if (id != goalViewModel.Id)
+                return BadRequest();
+
+            var goalYearPrevious = await _goalDayService.Update(goalViewModel.ToDayDb());
             return goalYearPrevious.ToViewModel();
         }
 
@@ -103,10 +143,39 @@ namespace TribiticaMVP.Controllers
             return CreatedAtAction(nameof(GetByIdYear), new { id = entry.Id }, entry);
         }
 
+        [HttpPost(APIRoutes.Goals.Day.Post)]
+        public async Task<ActionResult<GoalViewModel>> PostDay([FromBody] GoalViewModel goalViewModel)
+        {
+            var userGuid = GetUserId();
+            if (!userGuid.HasValue)
+                return Forbid();
+
+            goalViewModel.OwnerId = userGuid.Value;
+
+            var entry = await _goalDayService.Add(goalViewModel.ToDayDb());
+            return CreatedAtAction(nameof(GetByIdYear), new { id = entry.Id }, entry);
+        }
+
         [HttpDelete(APIRoutes.Goals.Year.Delete)]
         public async Task<ActionResult> DeleteYear(Guid id)
         {
             var success = await _goalYearService.Delete(id);
+            if (!success) return NotFound();
+            return Ok();
+        }
+
+        [HttpDelete(APIRoutes.Goals.Week.Delete)]
+        public async Task<ActionResult> DeleteWeek(Guid id)
+        {
+            var success = await _goalWeekService.Delete(id);
+            if (!success) return NotFound();
+            return Ok();
+        }
+
+        [HttpDelete(APIRoutes.Goals.Day.Delete)]
+        public async Task<ActionResult> DeleteDay(Guid id)
+        {
+            var success = await _goalDayService.Delete(id);
             if (!success) return NotFound();
             return Ok();
         }

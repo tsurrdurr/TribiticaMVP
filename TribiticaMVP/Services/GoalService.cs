@@ -101,7 +101,7 @@ namespace TribiticaMVP.Services
             }
             else if (typeof(T) == typeof(GoalWeek))
             {
-                stuff = dbContext.GoalsYear;
+                stuff = dbContext.GoalsWeek;
             }
             else if (typeof(T) == typeof(GoalYear))
             {

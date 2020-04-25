@@ -28,6 +28,15 @@ namespace TribiticaMVP.Contracts
                 public const string Put =     Base + "goals/week/{id}";
                 public const string Delete =  Base + "goals/week/{id}";
             }
+
+            public static class Day
+            {
+                public const string GetAll = Base + "goals/day";
+                public const string GetById = Base + "goals/day/{id}";
+                public const string Post = Base + "goals/day";
+                public const string Put = Base + "goals/day/{id}";
+                public const string Delete = Base + "goals/day/{id}";
+            }
         }
     }
 }

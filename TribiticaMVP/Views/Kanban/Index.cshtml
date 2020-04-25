@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" href="~/css/site.css" />
+@{ var columns = new string[] { "day", "week", "year" }; }
 
 @if (ViewContext.HttpContext.Session.TryGetValue("UserID", out var userGuidBytes))
 {
@@ -14,22 +15,24 @@
 
 <h1>Kanban</h1>
 <div class="row">
-    <div class="column" id="day"></div>
-    <div class="column" id="week"></div>
-    <div class="column" id="year">
-        <form action="javascript:void(0);" method="POST" onsubmit="addItem()" id="create-year-form">
-            <span>
-                <input type="text" id="add-yearly-name" placeholder="New yearly">
-                <input type="submit" value="Add">
-            </span>
-        </form>
-    </div>
+    @foreach (var column in columns)
+    {
+        <div class="column" id="@column">
+            <form action="javascript:void(0);" method="POST" onsubmit="addItem('@column')" id="create-@column-form">
+                <span>
+                    <input type="text" id="add-@column-goal-name" placeholder="New goal">
+                    <input type="submit" value="Add">
+                </span>
+            </form>
+        </div>
+    }
 </div>
 
 <div id="editForm">
     <h3>Edit</h3>
     <form action="javascript:void(0);" onsubmit="updateItem()">
         <input type="hidden" id="edit-id">
+        <input type="hidden" id="edit-type">
         <input type="text" id="edit-header">
         <input type="text" id="edit-description">
         <input type="submit" value="Save">
@@ -39,5 +42,7 @@
 
 <script src="js/site.js" asp-append-version="true"></script>
 <script type="text/javascript">
-    getItems();
+    getItems('year');
+    getItems('week');
+    getItems('day');
 </script>
