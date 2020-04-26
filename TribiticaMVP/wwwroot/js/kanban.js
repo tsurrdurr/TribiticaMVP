@@ -27,7 +27,8 @@ function getItems(itemType) {
 }
 
 function addItem(itemType) {
-    const headerText = document.getElementById(`add-${itemType}-goal-name`).value.trim();
+    var headerTextElement = document.getElementById(`add-${itemType}-goal-name`);
+    const headerText = headerTextElement.value.trim();
 
     const item = new Goal(default_id);
     item.header = headerText;
@@ -43,7 +44,7 @@ function addItem(itemType) {
         .then(response => response.json())
         .then(() => {
             getItems(itemType);
-            headerText.value = '';
+            headerTextElement.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
