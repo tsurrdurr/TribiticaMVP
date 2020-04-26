@@ -1,0 +1,23 @@
+{
+  "name": "tribiticamvp",
+  "version": "1.0.0",
+  "description": "-",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^4.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsurrdurr/TribiticaMVP.git"
+  },
+  "author": "tsurrdurr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tsurrdurr/TribiticaMVP/issues"
+  },
+  "homepage": "https://github.com/tsurrdurr/TribiticaMVP#readme"
+}

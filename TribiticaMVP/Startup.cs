@@ -74,6 +74,12 @@ namespace TribiticaMVP
                 app.UseHsts();
             }
 
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<TribiticaDbContext>();
+                context.Database.EnsureCreated();
+            }
+
             var swaggerOptions = new Options.SwaggerOptions();
             Configuration.GetSection(nameof(Options.SwaggerOptions)).Bind(swaggerOptions);
 
@@ -105,9 +111,27 @@ namespace TribiticaMVP
         {
             TribiticaDbContext.DbFileName = GetDbFileNameFromSettings();
 
-            using (var client = new TribiticaDbContext(new DbContextOptionsBuilder<TribiticaDbContext>().UseSqlite("Filename=" + GetDbFileNameFromSettings()).Options))
+            using (var dbContext = new TribiticaDbContext(new DbContextOptionsBuilder<TribiticaDbContext>().UseSqlite("Filename=" + GetDbFileNameFromSettings()).Options))
             {
-                client.Database.EnsureCreated();
+                dbContext.Database.EnsureCreated();
+                // CreateDebugAccount(dbContext, "yankee");
+                CreateDebugAccount(dbContext, "cypress");
+            }
+        }
+
+        private static void CreateDebugAccount(TribiticaDbContext dbContext, string name)
+        {
+            if (!dbContext.Accounts.Any(x => x.Name == name))
+            {
+                var tribiticaAccount = new TribiticaAccount
+                {
+                    ID = Guid.NewGuid(),
+                    Name = name,
+                    Password = name,
+                    Email = $"{name}@a.bc"
+                };
+                dbContext.Add(tribiticaAccount);
+                dbContext.SaveChanges();
             }
         }
 
